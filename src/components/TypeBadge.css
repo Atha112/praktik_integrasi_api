@@ -1,0 +1,12 @@
+/* src/components/TypeBadge.css */
+.type-badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.7rem; /* Ukuran font sedikit dikecilin biar muat */
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  backdrop-filter: brightness(0.9);
+}

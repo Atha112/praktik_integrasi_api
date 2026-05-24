@@ -1,0 +1,67 @@
+/* src/App.css */
+:root {
+  --primary-bg: #0f0c29;
+  --secondary-bg: #302b63;
+  --accent-color: #24243e;
+  --text-color: #ffffff;
+  --highlight: #ffcb05;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg), var(--accent-color));
+  background-attachment: fixed;
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.app-header h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: 5px;
+  background: linear-gradient(to right, #ffcb05, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+}
+
+/* INI BIAR KARTU RAPIH */
+.pokemon-grid {
+  display: grid;
+  /* Bikin 4 kolom pas, tapi responsive kalau layar kecil */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  justify-items: center; /* Biar kartu nengah kalau kosong */
+}
+
+/* Skeleton Loading */
+.card-skeleton {
+  width: 100%;
+  height: 320px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
