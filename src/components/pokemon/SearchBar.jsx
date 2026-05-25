@@ -1,20 +1,6 @@
-import React, { useState } from 'react';
 import './SearchBar.css';
 
-const SearchBar = ({ onSearch }) => {
-  const [input, setInput] = useState('');
-
-  const handleChange = (e) => {
-    setInput(e.target.value);
-    onSearch(e.target.value);
-  };
-
-  // Fungsi untuk hapus pencarian
-  const handleClear = () => {
-    setInput('');
-    onSearch(''); // Kirim string kosong ke parent biar balik ke list
-  };
-
+const SearchBar = ({ value, onChange }) => {
   return (
     <div className="search-container">
       {/* Icon Search di kiri */}
@@ -23,14 +9,14 @@ const SearchBar = ({ onSearch }) => {
       <input
         type="text"
         className="search-input"
-        placeholder="Cari Pokemon..."
-        value={input}
-        onChange={handleChange}
+        placeholder="Cari nama Pokémon..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
       />
       
       {/* Tombol X muncul kalau ada input */}
-      {input && (
-        <button className="clear-btn" onClick={handleClear}>
+      {value && (
+        <button className="clear-btn" onClick={() => onChange('')}>
           ✕
         </button>
       )}

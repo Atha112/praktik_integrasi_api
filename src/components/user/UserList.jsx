@@ -18,11 +18,6 @@ export default function UserList() {
   const [searchTerm, setSearchTerm] =
     useState('');
 
-  // useEffect jalan sekali saat component muncul
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   // Function ambil data API
   const fetchUsers = async () => {
     setLoading(true);
@@ -44,6 +39,12 @@ export default function UserList() {
       setLoading(false);
     }
   };
+
+  // useEffect jalan sekali saat component muncul
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, []);
 
   // Filter search
   const filteredUsers = users.filter(
