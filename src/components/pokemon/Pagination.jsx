@@ -1,7 +1,6 @@
-import React from 'react';
 import './Pagination.css';
 
-const Pagination = ({ onNext, onPrev, hasNext, hasPrev }) => {
+const Pagination = ({ onNext, onPrev, hasNext, hasPrev, currentPage, totalPages }) => {
   return (
     <div className="pagination-container">
       <button 
@@ -11,6 +10,13 @@ const Pagination = ({ onNext, onPrev, hasNext, hasPrev }) => {
       >
         &larr; Prev
       </button>
+      
+      {currentPage && totalPages && (
+        <span className="page-info">
+          Hal {currentPage} / {totalPages}
+        </span>
+      )}
+      
       <button 
         onClick={onNext} 
         disabled={!hasNext}

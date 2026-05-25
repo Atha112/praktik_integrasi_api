@@ -1,85 +1,165 @@
 // src/pages/PokemonPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PokemonCard from '../components/pokemon/PokemonCard';
 import SearchBar from '../components/pokemon/SearchBar';
 import Pagination from '../components/pokemon/Pagination';
+import FilterSection from '../components/pokemon/FilterSection';
+import ErrorState from '../components/pokemon/ErrorState';
 import '../App.css';
 
 const PokemonPage = () => {
   const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState('https://pokeapi.co/api/v2/pokemon?limit=12');
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
-
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  
+  // Filtering & Sorting State
+  const [selectedType, setSelectedType] = useState('all');
+  const [sortBy, setSortBy] = useState('id-asc');
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  
+  // Error handling State
+  const [error, setError] = useState(null);
 
-  const fetchPokemonList = async (apiUrl) => {
+  // Helper untuk mendapatkan ID Pokémon dari detail URL
+  const getPokemonIdFromUrl = useCallback((url) => {
+    const parts = url.split('/').filter(Boolean);
+    return parseInt(parts[parts.length - 1], 10);
+  }, []);
+
+  const fetchPokemonList = useCallback(async () => {
+    // Memindahkan eksekusi ke microtask berikutnya untuk menghindari setState sinkron dalam effect
+    await Promise.resolve();
     setLoading(true);
-    setIsSearching(false);
+    setError(null);
 
     try {
-      const response = await axios.get(apiUrl);
+      let results = [];
+      let totalCount = 0;
 
-      setNextUrl(response.data.next);
-      setPrevUrl(response.data.previous);
+      if (selectedType === 'all') {
+        // Standard API endpoint dengan limit & offset
+        const offset = (currentPage - 1) * 12;
+        const response = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon?limit=12&offset=${offset}`
+        );
+        results = response.data.results;
+        totalCount = response.data.count;
+      } else {
+        // Mengambil semua Pokémon dari kategori tipe yang dipilih
+        const response = await axios.get(
+          `https://pokeapi.co/api/v2/type/${selectedType}`
+        );
+        results = response.data.pokemon.map((p) => p.pokemon);
+        totalCount = results.length;
+      }
 
-      const pokemonDetails = await Promise.all(
-        response.data.results.map(async (pokemon) => {
-          const detail = await axios.get(pokemon.url);
-          return detail.data;
-        })
-      );
+      // 1. Lakukan Pengurutan (Sorting) pada hasil daftar Pokémon
+      if (sortBy === 'id-asc') {
+        results.sort((a, b) => getPokemonIdFromUrl(a.url) - getPokemonIdFromUrl(b.url));
+      } else if (sortBy === 'id-desc') {
+        results.sort((a, b) => getPokemonIdFromUrl(b.url) - getPokemonIdFromUrl(a.url));
+      } else if (sortBy === 'name-asc') {
+        results.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === 'name-desc') {
+        results.sort((a, b) => b.name.localeCompare(a.name));
+      }
 
-      setPokemonData(pokemonDetails);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+      // 2. Bagi halaman (Paginate Client-Side) jika filter tipe aktif
+      let pageItems = results;
+      if (selectedType !== 'all') {
+        const startIndex = (currentPage - 1) * 12;
+        pageItems = results.slice(startIndex, startIndex + 12);
+      }
+
+      setTotalPages(Math.ceil(totalCount / 12));
+
+      // 3. Ambil data detail Pokémon hanya untuk halaman yang sedang aktif
+      if (pageItems.length === 0) {
+        setPokemonData([]);
+      } else {
+        const detailedData = await Promise.all(
+          pageItems.map(async (pokemon) => {
+            const detail = await axios.get(pokemon.url);
+            return detail.data;
+          })
+        );
+        setPokemonData(detailedData);
+      }
+    } catch (err) {
+      console.error('Error fetching list:', err);
+      setError({
+        type: 'fetch',
+        message: 'Gagal menghubungi PokeAPI. Silakan periksa koneksi internet Anda.'
+      });
+      setPokemonData([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, selectedType, sortBy, getPokemonIdFromUrl]);
 
-  const searchPokemon = async (query) => {
-    if (!query) return;
-
+  const searchPokemon = useCallback(async (query) => {
+    // Memindahkan eksekusi ke microtask berikutnya untuk menghindari setState sinkron dalam effect
+    await Promise.resolve();
     setLoading(true);
-    setIsSearching(true);
+    setError(null);
 
     try {
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${query}`
       );
-
       setPokemonData([response.data]);
-    } catch (error) {
+      setTotalPages(1);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error('Error searching pokemon:', err);
       setPokemonData([]);
+      setError({
+        type: 'search',
+        message: `Pokémon "${query}" tidak ditemukan. Pastikan nama yang Anda masukkan benar (contoh: pikachu, charizard).`
+      });
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Efek untuk memicu reload daftar list Pokémon atau melakukan pencarian
+  useEffect(() => {
+    if (searchQuery.trim() !== '') {
+      const timer = setTimeout(() => {
+        searchPokemon(searchQuery.toLowerCase().trim());
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchPokemonList();
+    }
+  }, [currentPage, selectedType, sortBy, searchQuery, fetchPokemonList, searchPokemon]);
+
+  // Ubah tipe filter, reset halaman ke awal, dan hapus text search bar
+  const handleTypeChange = (type) => {
+    setSelectedType(type);
+    setCurrentPage(1);
+    setSearchQuery('');
   };
 
-  useEffect(() => {
-    if (searchQuery === '') {
-      fetchPokemonList(url);
-    }
-  }, [url, searchQuery]);
+  // Ubah urutan sorting, reset halaman ke awal
+  const handleSortChange = (sortOption) => {
+    setSortBy(sortOption);
+    setCurrentPage(1);
+  };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchQuery) {
-        searchPokemon(searchQuery.toLowerCase());
-      }
-    }, 500);
+  const handleRetry = () => {
+    fetchPokemonList();
+  };
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  const handleNext = () => nextUrl && setUrl(nextUrl);
-  const handlePrev = () => prevUrl && setUrl(prevUrl);
+  const handleResetSearch = () => {
+    setSearchQuery('');
+  };
 
   return (
     <div className="app-container">
@@ -102,14 +182,47 @@ const PokemonPage = () => {
 
       <header className="app-header">
         <h1>POKEDEX</h1>
-        <SearchBar onSearch={setSearchQuery} />
       </header>
+
+      <FilterSection
+        selectedType={selectedType}
+        onTypeChange={handleTypeChange}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+        searchBarComponent={
+          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+        }
+      />
 
       <main className="pokemon-grid">
         {loading ? (
           Array.from({ length: 12 }).map((_, idx) => (
-            <div key={idx} className="card-skeleton"></div>
+            <div key={idx} className="card-skeleton">
+              <div className="skeleton-id"></div>
+              <div className="skeleton-image"></div>
+              <div className="skeleton-title"></div>
+              <div className="skeleton-badges">
+                <div className="skeleton-badge"></div>
+                <div className="skeleton-badge"></div>
+              </div>
+            </div>
           ))
+        ) : error ? (
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+            <ErrorState
+              type={error.type}
+              message={error.message}
+              onAction={error.type === 'search' ? handleResetSearch : handleRetry}
+            />
+          </div>
+        ) : pokemonData.length === 0 ? (
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+            <ErrorState
+              type="search"
+              message="Tidak ada Pokémon yang cocok dengan filter Anda."
+              onAction={handleResetSearch}
+            />
+          </div>
         ) : (
           pokemonData.map((pokemon) => (
             <PokemonCard key={pokemon.id} pokemon={pokemon} />
@@ -117,12 +230,14 @@ const PokemonPage = () => {
         )}
       </main>
 
-      {!loading && !isSearching && (
+      {!loading && !searchQuery && !error && pokemonData.length > 0 && (
         <Pagination
-          onNext={handleNext}
-          onPrev={handlePrev}
-          hasNext={!!nextUrl}
-          hasPrev={!!prevUrl}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onNext={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          onPrev={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          hasNext={currentPage < totalPages}
+          hasPrev={currentPage > 1}
         />
       )}
     </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import './PokemonCard.css';
 import TypeBadge from './TypeBadge';
 

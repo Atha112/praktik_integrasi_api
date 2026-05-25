@@ -1,4 +1,8 @@
 # React + Vite
+PROJECT INTEGRASI API KELOMPOK 6
+Abdurrahman Ichwan NIM: 253140707111061
+Teuku Atha Athaya Nafi NIM: 253140700111028
+Muhammad Ikhsan Putra Abiansyah NIM: 253140700111030
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
