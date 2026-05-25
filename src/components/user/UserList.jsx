@@ -63,18 +63,21 @@ export default function UserList() {
 
   if (error)
     return (
-      <div>
-        <p>{error}</p>
+      <div className="text-center p-8">
+        <p className="text-red-400 mb-4">{error}</p>
 
-        <button onClick={fetchUsers}>
+        <button
+          onClick={fetchUsers}
+          className="px-4 py-2 bg-blue-500 text-white border-none rounded-lg cursor-pointer hover:bg-blue-600 transition-colors"
+        >
           Coba Lagi
         </button>
       </div>
     );
 
   return (
-    <div style={styles.container}>
-      <h1>Daftar Pengguna</h1>
+    <div className="p-4 sm:p-8">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4">Daftar Pengguna</h1>
 
       <input
         type="text"
@@ -83,10 +86,10 @@ export default function UserList() {
         onChange={(e) =>
           setSearchTerm(e.target.value)
         }
-        style={styles.input}
+        className="w-full p-3 mb-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 outline-none transition-all duration-300 focus:bg-white/15 focus:border-white/40"
       />
 
-      <p>
+      <p className="mb-4 text-white/70">
         Menampilkan {filteredUsers.length} user
       </p>
 
@@ -94,27 +97,10 @@ export default function UserList() {
 
       <button
         onClick={fetchUsers}
-        style={styles.button}
+        className="mt-4 px-5 py-2.5 bg-emerald-500 text-white border-none rounded-lg cursor-pointer hover:bg-emerald-600 transition-colors font-medium"
       >
         Refresh
       </button>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: '2rem',
-  },
-
-  input: {
-    width: '100%',
-    padding: '10px',
-    marginBottom: '1rem',
-  },
-
-  button: {
-    marginTop: '1rem',
-    padding: '10px 20px',
-  },
-};

@@ -1,4 +1,3 @@
-import './PokemonCard.css';
 import TypeBadge from './TypeBadge';
 
 const PokemonCard = ({ pokemon }) => {
@@ -13,16 +12,16 @@ const PokemonCard = ({ pokemon }) => {
     || pokemon.sprites?.front_default;
 
   return (
-    <div className={`pokemon-card type-${mainType}`}>
+    <div className={`type-${mainType} relative rounded-2xl p-6 cursor-pointer transition-all duration-300 overflow-hidden backdrop-blur-sm border border-white/20 flex flex-col items-center h-[320px] w-full hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_15px_30px_rgba(0,0,0,0.5)] group`}>
       <div className="card-bg-pattern"></div>
-      <div className="pokemon-id">{formattedId}</div>
-      <div className="pokemon-image-wrapper">
-        {imageUrl && <img src={imageUrl} alt={pokemon.name} className="pokemon-image" />}
+      <div className="absolute top-2.5 left-[15px] font-black text-base opacity-70 text-white/80">{formattedId}</div>
+      <div className="w-[150px] h-[150px] flex justify-center items-center z-[2]">
+        {imageUrl && <img src={imageUrl} alt={pokemon.name} className="w-full h-auto drop-shadow-[0_10px_15px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[5deg]" />}
       </div>
-      <div className="pokemon-name">
+      <div className="mt-2 text-lg font-bold tracking-wide [text-shadow:1px_1px_2px_rgba(0,0,0,0.3)]">
         {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
       </div>
-      <div className="pokemon-types">
+      <div className="flex gap-2 mt-auto">
         {pokemon.types && pokemon.types.map((t) => (
           <TypeBadge key={t.type.name} type={t.type.name} />
         ))}

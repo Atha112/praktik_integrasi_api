@@ -1,5 +1,3 @@
-import './TypeBadge.css';
-
 const typeColors = {
   grass: '#78c850',
   poison: '#a040a0',
@@ -18,7 +16,7 @@ const typeColors = {
 const TypeBadge = ({ type }) => {
   return (
     <span 
-      className="type-badge" 
+      className="px-3 py-1 rounded-full text-[0.7rem] font-semibold text-white uppercase tracking-wide shadow-[0_2px_5px_rgba(0,0,0,0.2)]" 
       style={{ backgroundColor: typeColors[type] || '#777' }}
     >
       {type}

@@ -1,27 +1,9 @@
 export default function LoadingSpinner() {
   return (
-    <div style={styles.container}>
-      <div style={styles.spinner}></div>
+    <div className="flex flex-col items-center justify-center p-8">
+      <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
 
-      <p>Memuat data...</p>
+      <p className="mt-4 text-white/70">Memuat data...</p>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '2rem',
-  },
-
-  spinner: {
-    width: '40px',
-    height: '40px',
-    border: '4px solid #ddd',
-    borderTop: '4px solid #3498db',
-    borderRadius: '50%',
-  },
-};

@@ -67,24 +67,24 @@ export default function AddUserForm({ onSuccess }) {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-[#9faef1] to-[#aea2b9] p-5">
+      <div className="w-full max-w-[450px] bg-white rounded-2xl p-8 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+        <h1 className="mb-2.5 text-[#322a2a] text-3xl font-bold text-center">
           Tambahkan User
         </h1>
 
-        <p style={styles.subtitle}>
+        <p className="text-center text-black mb-7">
           Integrasi POST API dengan React +
           Axios
         </p>
 
         {message && (
           <div
-            style={
+            className={`p-3 rounded-[10px] mb-5 text-center ${
               message.type === 'success'
-                ? styles.success
-                : styles.error
-            }
+                ? 'bg-emerald-100 text-emerald-800'
+                : 'bg-red-100 text-red-800'
+            }`}
           >
             {message.text}
           </div>
@@ -92,7 +92,7 @@ export default function AddUserForm({ onSuccess }) {
 
         <form
           onSubmit={handleSubmit}
-          style={styles.form}
+          className="flex flex-col gap-4"
         >
           <input
             type="text"
@@ -100,7 +100,7 @@ export default function AddUserForm({ onSuccess }) {
             placeholder="Nama lengkap"
             value={formData.name}
             onChange={handleChange}
-            style={styles.input}
+            className="px-4 py-3.5 rounded-xl border border-gray-300 text-[15px] text-gray-900 placeholder-gray-500 outline-none transition-all duration-300 focus:border-blue-400 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)]"
             required
           />
 
@@ -110,7 +110,7 @@ export default function AddUserForm({ onSuccess }) {
             placeholder="Alamat email"
             value={formData.email}
             onChange={handleChange}
-            style={styles.input}
+            className="px-4 py-3.5 rounded-xl border border-gray-300 text-[15px] text-gray-900 placeholder-gray-500 outline-none transition-all duration-300 focus:border-blue-400 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)]"
             required
           />
 
@@ -120,18 +120,18 @@ export default function AddUserForm({ onSuccess }) {
             placeholder="Nomor telepon"
             value={formData.phone}
             onChange={handleChange}
-            style={styles.input}
+            className="px-4 py-3.5 rounded-xl border border-gray-300 text-[15px] text-gray-900 placeholder-gray-500 outline-none transition-all duration-300 focus:border-blue-400 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)]"
             required
           />
 
           <button
             type="submit"
             disabled={isSubmitting}
-            style={
+            className={`py-3.5 border-none rounded-xl text-white font-semibold text-base transition-all duration-300 ${
               isSubmitting
-                ? styles.buttonDisabled
-                : styles.button
-            }
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-gradient-to-br from-[#69b5d5] to-[#b19ec3] cursor-pointer hover:opacity-90 hover:shadow-lg'
+            }`}
           >
             {isSubmitting
               ? 'Mengirim...'
@@ -142,131 +142,3 @@ export default function AddUserForm({ onSuccess }) {
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    background:
-      'linear-gradient(135deg,  #9faef1, #aea2b9)',
-
-    padding: '20px',
-  },
-
-  card: {
-    width: '100%',
-    maxWidth: '450px',
-
-    background: 'white',
-
-    borderRadius: '20px',
-
-    padding: '35px',
-
-    boxShadow:
-      '0 10px 30px rgba(0,0,0,0.2)',
-  },
-
-  title: {
-    marginBottom: '10px',
-    color: '#322a2a',
-    fontSize: '32px',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-
-  subtitle: {
-    textAlign: 'center',
-    color: '#000000',
-    marginBottom: '30px',
-  },
-
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '18px',
-  },
-
-  input: {
-    padding: '14px 16px',
-
-    borderRadius: '12px',
-
-    border: '1px solid #ddd',
-
-    fontSize: '15px',
-
-    outline: 'none',
-
-    transition: '0.3s',
-  },
-
-  button: {
-    padding: '14px',
-
-    border: 'none',
-
-    borderRadius: '12px',
-
-    background:
-      'linear-gradient(135deg, #69b5d5, #b19ec3)',
-
-    color: 'white',
-
-    fontWeight: '600',
-
-    fontSize: '16px',
-
-    cursor: 'pointer',
-
-    transition: '0.3s',
-  },
-
-  buttonDisabled: {
-    padding: '14px',
-
-    border: 'none',
-
-    borderRadius: '12px',
-
-    background: '#999',
-
-    color: 'white',
-
-    fontWeight: '600',
-
-    fontSize: '16px',
-
-    cursor: 'not-allowed',
-  },
-
-  success: {
-    background: '#d1fae5',
-
-    color: '#065f46',
-
-    padding: '12px',
-
-    borderRadius: '10px',
-
-    marginBottom: '20px',
-
-    textAlign: 'center',
-  },
-
-  error: {
-    background: '#fee2e2',
-
-    color: '#991b1b',
-
-    padding: '12px',
-
-    borderRadius: '10px',
-
-    marginBottom: '20px',
-
-    textAlign: 'center',
-  },
-};
