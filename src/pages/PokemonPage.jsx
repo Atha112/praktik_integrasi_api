@@ -1,6 +1,7 @@
 // src/pages/PokemonPage.jsx
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PokemonCard from '../components/pokemon/PokemonCard';
 import SearchBar from '../components/pokemon/SearchBar';
@@ -82,6 +83,23 @@ const PokemonPage = () => {
 
   return (
     <div className="app-container">
+      <Link to="/" className="btn-back">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Kembali ke Beranda
+      </Link>
+
       <header className="app-header">
         <h1>POKEDEX</h1>
         <SearchBar onSearch={setSearchQuery} />
