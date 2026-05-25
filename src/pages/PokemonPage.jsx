@@ -1,6 +1,7 @@
 // src/pages/PokemonPage.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PokemonCard from '../components/pokemon/PokemonCard';
 import SearchBar from '../components/pokemon/SearchBar';
