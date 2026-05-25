@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function AddUserForm() {
+export default function AddUserForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -51,6 +51,9 @@ export default function AddUserForm() {
         email: '',
         phone: '',
       });
+
+      // Panggil callback untuk refresh data di parent
+      if (onSuccess) onSuccess();
     } catch (error) {
       setMessage({
         type: 'error',
